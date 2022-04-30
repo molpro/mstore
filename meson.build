@@ -1,4 +1,5 @@
 # This file is part of mstore.
+# SPDX-Identifier: Apache-2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 project(
   'mstore',
   'fortran',
-  version: '0.1.2',
+  version: '0.1.3',
   license: 'Apache-2.0',
   meson_version: '>=0.53',
   default_options: [
@@ -67,9 +68,16 @@ if install
     install_dir: get_option('datadir')/'licenses'/meson.project_name()
   )
 
+  module_id = meson.project_name() / fc_id + '-' + fc.version()
+  meson.add_install_script(
+    find_program(files('config'/'install-mod.py')),
+    get_option('includedir') / module_id,
+  )
+
   pkg = import('pkgconfig')
   pkg.generate(
     mstore_lib,
     description: 'Molecular structure store for testing',
+    subdirs: ['', module_id],
   )
 endif
